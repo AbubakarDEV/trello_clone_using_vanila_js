@@ -1,0 +1,76 @@
+*{
+    padding: 0;
+    margin: 0;
+}
+h5,h2,h3{
+    color: white;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+h5{
+    opacity: .8;
+    letter-spacing: 2px;
+}
+h1{
+    color: #844d4d;
+}
+
+.heading{
+    margin-top: 20px;
+    text-align: center;
+    font-size: 30px;
+    color: #844d4d;
+    font-weight: bold;
+    
+}
+
+#addBtn,#addBtn_subForm,#edit_btn{
+    margin-top: 10px;
+    background-image: linear-gradient(to right,#6b523e,#804348);    
+    width: 80px;
+    font-size: 20px;
+    padding: 10px 12px 12px 10px;
+    border: white;    
+    color: white;
+}
+
+.open_Form{
+    margin-top: 20px;
+    text-align: center;
+}
+label{
+    font-size: 22px;
+    color: #844d4d;
+    font-weight: bold;
+}
+input{
+    padding:10px;
+    width: 200px;
+    background-color: #844d4d;
+    font-size: 20px;
+    color: white;
+}
+input[type="text"]::placeholder{
+    color: white;
+}
+
+select{
+    height: 40px;
+    width: 84%;
+    font-size: 20px;
+    background-color:#844d4d ;
+    color: white;
+}
+
+#display_outer_card{
+    margin-top: 1%;
+    display: flex;
+    padding-left: 30%;
+}
+#status{
+    display: none;
+}
+#edit_btn{
+    display: none;
+}
+

@@ -1,0 +1,21 @@
+Main Tasks Boxes:
+
+1. Positioning -done
+2. Add Main Sub -done
+3. Main Task 03 validation -done
+4. Delete Main Task -done
+5. Sweet Alert -done
+
+
+- Keep Add Option when array.length < 3 -done
+
+Sub Tasks:
+	
+1. Add Sub Task - Open modal -done
+2. On Add - Append inside Main Task
+3. Status hide  -done
+
+Wednesday Task:
+1. empty form data
+2. multiple Task -done
+3. append div into child -done
