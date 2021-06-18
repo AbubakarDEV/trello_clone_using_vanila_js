@@ -19,3 +19,11 @@ Wednesday Task:
 1. empty form data
 2. multiple Task -done
 3. append div into child -done
+
+
+friday
+
+1. form empty on Add
+2. edit and delete button
+3. Add Status field and move 
+4. Deleted unsucessfull -done

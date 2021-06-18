@@ -1,6 +1,6 @@
 var arr_elements = []//global array to push notes
 
-var sub_arr_elements = []//global array to push notes
+var sub_arr_elements = []//sub array to push notes
 let sub_data_ul = document.getElementById("sub_data_ul");
 var outerid = 1;
 var inner_id = 1;
@@ -23,6 +23,8 @@ window.onclick = function (event) {
 
 function edit_Handler(sub_array_obj) {
     document.getElementById('addBtn_subForm').style.display = "none"
+    var status_after_onclick_edit = document.getElementById('status').style.display = "block"
+    document.getElementById('status_label').style.display = "block"
     var ul = document.getElementById('inner_ul_for_edit_' + sub_array_obj.sub_id)
     var editbtn = document.getElementById("edit_btn");
     editbtn.style.display = "block"
@@ -32,15 +34,12 @@ function edit_Handler(sub_array_obj) {
     var inner_description = document.getElementById('Description').value = ul.children[2].innerText;
     modal.style.display = "block";
 
-
 }
-function edit_Handler_2(e) {
-    // debugger;
 
+function edit_Handler_2(e) {
     var inner_title = document.getElementById('title').value
     var inner_assign = document.getElementById('Assign').value
     var inner_description = document.getElementById('Description').value
-    console.log(e.target.name)
     var objIndex = sub_arr_elements.findIndex((obj => obj.sub_id == e.target.name));
     console.log("Before update: ", sub_arr_elements[objIndex])
     sub_arr_elements[objIndex].title = inner_title
@@ -48,17 +47,26 @@ function edit_Handler_2(e) {
     sub_arr_elements[objIndex].des = inner_description
     console.log("After update: ", sub_arr_elements[objIndex])
     var ul = document.getElementById('inner_ul_for_edit_' + e.target.name)
-    ul.children[0].innerText=inner_title;
-    ul.children[1].innerText=inner_assign;
-    ul.children[2].innerText=inner_description;
+    ul.children[0].innerText = inner_title;
+    ul.children[1].innerText = inner_assign;
+    ul.children[2].innerText = inner_description;
     modal.style.display = "none";
+    var status_after_onclick_edit = document.getElementById('status').style.display = "none"
+    document.getElementById('status_label').style.display = "none"
+
     clearForm()
+}
+
+function delete_handler(sub_array_obj) {
+    var ul = document.getElementById('inner_ul_for_edit_' + sub_array_obj.sub_id)
+    ul.remove()
+    var edit_btn_sub_task = document.getElementById('edit_btn_inside_sub_data').style.display = "none"
+    var delete_btn_sub_task = document.getElementById('delete_btn_inside_sub_data').style.display = "none"
 }
 
 
 
 function display_inner_data(sub_array_obj, mainID) {
-    // debugedit_btnger;
     if (sub_array_obj) {
         let elem = document.createElement('ul');
         elem.style.listStyle = "none"
@@ -72,10 +80,18 @@ function display_inner_data(sub_array_obj, mainID) {
         var ul = document.getElementById("sub_data_ul_" + mainID);
         ul.appendChild(elem);
         inner_id++
-        elem.onclick = function () {
+        var edit_btn_sub_task = document.getElementById('edit_btn_inside_sub_data')
+        var delete_btn_sub_task = document.getElementById('delete_btn_inside_sub_data')
+        delete_btn_sub_task.style.display = "block"
+        delete_btn_sub_task.onclick = function () {
+            delete_handler(sub_array_obj)
+        };
+        edit_btn_sub_task.style.display = "block"
+        edit_btn_sub_task.onclick = function () {
             edit_Handler(sub_array_obj)
         };
         modal.style.display = "none";
+
     }
 }
 
@@ -84,7 +100,6 @@ const subTaskTemplate = (obj) => { return `<li>${obj.title}</li><li>${obj.assign
 
 
 function submit_inner_data(mainID) {
-    // debugger;
     var inner_title = document.getElementById('title').value
     var inner_assign = document.getElementById('Assign').value
     var inner_description = document.getElementById('Description').value
@@ -101,13 +116,11 @@ function submit_inner_data(mainID) {
 }
 
 function saveForm(e) {
-    // debugger;
     submit_inner_data(e.target.name)
     clearForm();
 }
 
 function bindForm() {
-    // debugger;
     var sub_data_save_btn = document.getElementById('addBtn_subForm')
     sub_data_save_btn.addEventListener("click", saveForm)
     var editbtn = document.getElementById("edit_btn");
@@ -118,11 +131,9 @@ document.addEventListener("DOMContentLoaded", bindForm);
 
 
 function add_sub_details(mainID) {
-    // debugger;
     document.getElementById("addBtn_subForm").name = mainID
     document.getElementById('addBtn_subForm').style.display = "block"
-    var editbtn = document.getElementById("edit_btn").style.display="none";
-
+    var editbtn = document.getElementById("edit_btn").style.display = "none";
     modal.style.display = "block";
 }
 
@@ -142,11 +153,14 @@ const MainTaskTemplate = (obj) => {
                                         
                                         <h2>${obj.title}</h2>
                                         <h5>${obj.date}</h5>
-                                        <button style="position:absolute;bottom:0;left:0;padding:10px" onclick="add_sub_details(${obj.id})">Add a card</button>
+                                        <button style="position:absolute;bottom:0;left:0;padding:10px" onclick="add_sub_details(${obj.id}) ">Add a card</button>
                                         <button style="position:absolute;bottom:0;right:0;padding:10px"  onclick="delete_main_card(${obj.id})">Delete</button>            
                                         
                                 </div>
-                                <div id="sub_data_ul_${obj.id}" style="background-color:white;width:180px;height:auto;;margin-bottom:10px">
+                                <div id="sub_data_ul_${obj.id}" style="position:relative;background-color:white;width:180px;height:auto;;margin-bottom:10px">
+                                <button id="edit_btn_inside_sub_data"  style="position:absolute;bottom:0;right:60px;padding:5px")">Edit</button>            
+                                <button id="delete_btn_inside_sub_data" style="position:absolute;bottom:0;right:0;padding:5px")">Delete</button>            
+                                
                                 </div>
                                 `
 
@@ -201,30 +215,36 @@ function clearForm() {
     var inner_assign = document.getElementById('Assign').value = "";
     var inner_description = document.getElementById('Description').value = "";
 }
+
+function delete_sub_card(mainID) {
+    var ul = document.getElementById("sub_data_ul_" + mainID);
+    ul.remove();
+}
+
 function delete_main_card(id) {
 
-    swal({
-        title: "Are you sure? You want to delete",
-        icon: "warning",
-        buttons: true,
-        dangerMode: true,
-    })
-        .then((willDelete) => {
-            if (willDelete) {
-                swal("Deleted sucessfully", {
-                    icon: "success",
-                });
-                arr_elements.pop();
-                sub_arr_elements.pop()
-                document.getElementById("sub_data_container_" + id).style.display = "none";
-
-                if (arr_elements.length == 2) {
-                    open_Form.style.display = "block"
+    if (id != 0) {
+        swal({
+            title: "Are you sure? You want to delete",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        })
+            .then((willDelete) => {
+                if (willDelete) {
+                    swal("Deleted sucessfully", {
+                        icon: "success",
+                    });
+                    arr_elements.pop();
+                    document.getElementById("sub_data_container_" + id).style.display = "none";
+                    delete_sub_card(id)
+                    if (arr_elements.length == 2) {
+                        open_Form.style.display = "block"
+                    }
                 }
-            } else {
-                swal("Delete unsucessfull");
-            }
-        });
+            });
+    }
+
 
 }
 
