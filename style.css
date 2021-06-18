@@ -67,13 +67,16 @@ select{
     display: flex;
     padding-left: 30%;
 }
-#status{
-    display: none;
-}
-#edit_btn{
-    display: none;
-}
 
-#edit_btn_inside_sub_data,#delete_btn_inside_sub_data,#status_label{
+/* #edit_btn_inside_sub_data,#delete_btn_inside_sub_data{
+    padding: 5px;
+    position: absolute;
+    right: 0;
+    bottom: 0;
+}
+#delete_btn_inside_sub_data{
+    right: 40px;
+} */
+#status_label,#edit_btn,#status{
     display: none;
 }

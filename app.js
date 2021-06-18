@@ -1,9 +1,9 @@
 var arr_elements = []//global array to push notes
-
 var sub_arr_elements = []//sub array to push notes
 let sub_data_ul = document.getElementById("sub_data_ul");
 var outerid = 1;
 var inner_id = 1;
+var compare_status = null
 var modal = document.getElementById("myModal");
 // Get the <span> element that closes the modal
 var span = document.getElementsByClassName("close")[0];
@@ -22,8 +22,13 @@ window.onclick = function (event) {
 
 
 function edit_Handler(sub_array_obj) {
-    document.getElementById('addBtn_subForm').style.display = "none"
-    var status_after_onclick_edit = document.getElementById('status').style.display = "block"
+    //8
+
+    console.log(sub_array_obj)
+    document.getElementById('addBtn_subForm').style.display="none"
+    var status_after_onclick_edit = document.getElementById('status')
+    console.log("status value", status_after_onclick_edit.value)
+    status_after_onclick_edit.style.display = "block"
     document.getElementById('status_label').style.display = "block"
     var ul = document.getElementById('inner_ul_for_edit_' + sub_array_obj.sub_id)
     var editbtn = document.getElementById("edit_btn");
@@ -33,40 +38,52 @@ function edit_Handler(sub_array_obj) {
     var inner_assign = document.getElementById('Assign').value = ul.children[1].innerText;
     var inner_description = document.getElementById('Description').value = ul.children[2].innerText;
     modal.style.display = "block";
-
+    active_status = status_after_onclick_edit.value
 }
 
 function edit_Handler_2(e) {
+    //9
+
     var inner_title = document.getElementById('title').value
     var inner_assign = document.getElementById('Assign').value
+    var inner_status = document.getElementById('status').value
     var inner_description = document.getElementById('Description').value
-    var objIndex = sub_arr_elements.findIndex((obj => obj.sub_id == e.target.name));
-    console.log("Before update: ", sub_arr_elements[objIndex])
-    sub_arr_elements[objIndex].title = inner_title
-    sub_arr_elements[objIndex].assign = inner_assign
-    sub_arr_elements[objIndex].des = inner_description
-    console.log("After update: ", sub_arr_elements[objIndex])
-    var ul = document.getElementById('inner_ul_for_edit_' + e.target.name)
-    ul.children[0].innerText = inner_title;
-    ul.children[1].innerText = inner_assign;
-    ul.children[2].innerText = inner_description;
-    modal.style.display = "none";
-    var status_after_onclick_edit = document.getElementById('status').style.display = "none"
-    document.getElementById('status_label').style.display = "none"
+    if (inner_status == active_status) {
+        var objIndex = sub_arr_elements.findIndex((obj => obj.sub_id == e.target.name));
+        sub_arr_elements[objIndex].title = inner_title
+        sub_arr_elements[objIndex].assign = inner_assign
+        sub_arr_elements[objIndex].des = inner_description
+        var ul = document.getElementById('inner_ul_for_edit_' + e.target.name)
+        ul.children[0].innerText = inner_title;
+        ul.children[1].innerText = inner_assign;
+        ul.children[2].innerText = inner_description;
+        modal.style.display = "none";
+        document.getElementById('status').remove()
+        document.getElementById('status_label').remove()
+    }
+    else {
+        var ul = document.getElementById('inner_ul_for_edit_' + e.target.name)
+        ul.remove()
+        var objIndex = sub_arr_elements.findIndex((obj => obj.sub_id == e.target.name));
+        display_inner_data(sub_arr_elements[objIndex], inner_status)
+        // remove_edit_and_delete()
+        modal.style.display = "none";
 
+    }
     clearForm()
+
 }
+
 
 function delete_handler(sub_array_obj) {
     var ul = document.getElementById('inner_ul_for_edit_' + sub_array_obj.sub_id)
     ul.remove()
-    var edit_btn_sub_task = document.getElementById('edit_btn_inside_sub_data').style.display = "none"
-    var delete_btn_sub_task = document.getElementById('delete_btn_inside_sub_data').style.display = "none"
 }
 
 
-
 function display_inner_data(sub_array_obj, mainID) {
+    //7
+
     if (sub_array_obj) {
         let elem = document.createElement('ul');
         elem.style.listStyle = "none"
@@ -76,30 +93,55 @@ function display_inner_data(sub_array_obj, mainID) {
         elem.style.padding = "10px"
         elem.style.backgroundColor = "#844d4d"
         elem.id = "inner_ul_for_edit_" + sub_array_obj.sub_id
+
+        let edit_btn = document.createElement('button')
+        edit_btn.innerText = "Edit"
+        edit_btn.style.position = "absolute"
+        edit_btn.style.padding = "5px"
+        edit_btn.style.bottom = "0"
+        edit_btn.style.right = "0"
+        edit_btn.id = "edit_btn_inside_sub_data" + sub_array_obj.sub_id
+
+        let delete_btn = document.createElement('button')
+        delete_btn.innerText = "Delete"
+        delete_btn.style.position = "absolute"
+        delete_btn.style.padding = "5px"
+        delete_btn.style.bottom = "0"
+        delete_btn.style.right = "40px"
+        delete_btn.id = "delete_btn_inside_sub_data" + sub_array_obj.sub_id
+
         elem.innerHTML = subTaskTemplate(sub_array_obj);
-        var ul = document.getElementById("sub_data_ul_" + mainID);
-        ul.appendChild(elem);
+        var div = document.getElementById("sub_data_ul_" + mainID);
+
+        div.appendChild(elem);
+        div.appendChild(edit_btn)
+        div.appendChild(delete_btn)
+
+
         inner_id++
-        var edit_btn_sub_task = document.getElementById('edit_btn_inside_sub_data')
-        var delete_btn_sub_task = document.getElementById('delete_btn_inside_sub_data')
-        delete_btn_sub_task.style.display = "block"
-        delete_btn_sub_task.onclick = function () {
+        delete_btn.onclick = function () {
             delete_handler(sub_array_obj)
+            remove_edit_and_delete(sub_array_obj.sub_id)
         };
-        edit_btn_sub_task.style.display = "block"
-        edit_btn_sub_task.onclick = function () {
+        edit_btn.onclick = function () {
             edit_Handler(sub_array_obj)
         };
         modal.style.display = "none";
-
+        clearForm()
     }
 }
 
-
-const subTaskTemplate = (obj) => { return `<li>${obj.title}</li><li>${obj.assign}</li><li>${obj.des}</li>` }
+const subTaskTemplate = (obj) => {
+    return `<li>${obj.title}</li><li>${obj.assign}</li><li>${obj.des}</li>`
+}
+function remove_edit_and_delete(id) {
+    document.getElementById('delete_btn_inside_sub_data' + id).remove()
+    document.getElementById('edit_btn_inside_sub_data' + id).remove()
+}
 
 
 function submit_inner_data(mainID) {
+    //6
     var inner_title = document.getElementById('title').value
     var inner_assign = document.getElementById('Assign').value
     var inner_description = document.getElementById('Description').value
@@ -116,6 +158,7 @@ function submit_inner_data(mainID) {
 }
 
 function saveForm(e) {
+    //5
     submit_inner_data(e.target.name)
     clearForm();
 }
@@ -125,19 +168,23 @@ function bindForm() {
     sub_data_save_btn.addEventListener("click", saveForm)
     var editbtn = document.getElementById("edit_btn");
     editbtn.addEventListener('click', edit_Handler_2)
+
 }
 
 document.addEventListener("DOMContentLoaded", bindForm);
 
 
 function add_sub_details(mainID) {
+    //4
     document.getElementById("addBtn_subForm").name = mainID
     document.getElementById('addBtn_subForm').style.display = "block"
-    var editbtn = document.getElementById("edit_btn").style.display = "none";
+    document.getElementById("edit_btn").style.display="none"
     modal.style.display = "block";
 }
 
 const MainTaskTemplate = (obj) => {
+    //3
+
     return `
                                 <div style="
                                 padding: 15px;
@@ -158,8 +205,6 @@ const MainTaskTemplate = (obj) => {
                                         
                                 </div>
                                 <div id="sub_data_ul_${obj.id}" style="position:relative;background-color:white;width:180px;height:auto;;margin-bottom:10px">
-                                <button id="edit_btn_inside_sub_data"  style="position:absolute;bottom:0;right:60px;padding:5px")">Edit</button>            
-                                <button id="delete_btn_inside_sub_data" style="position:absolute;bottom:0;right:0;padding:5px")">Delete</button>            
                                 
                                 </div>
                                 `
@@ -172,18 +217,20 @@ const MainTaskTemplate = (obj) => {
 var addBtn = document.getElementById("addBtn");
 addBtn.addEventListener("click", save_data);
 function save_data() {
+
+    //1
     var add_title = document.getElementById('notes_title');
     if (add_title.value == "") {
         alert("Please enter something")
     }
     else {
         const d = new Date();
+
         let myobj = {
             id: outerid,
             title: add_title.value,
             date: d.toDateString()
         }
-
         arr_elements.push(myobj);
         add_title.value = ""
         display_main_data(myobj)
@@ -202,11 +249,14 @@ function save_data() {
 }
 
 function display_main_data(obj) {
+
+    //2
     let elem = document.createElement('div');
     elem.style.fontSize = "16px"
     elem.innerHTML = MainTaskTemplate(obj)
     let notesElm = document.getElementById("display_outer_card");
     notesElm.appendChild(elem)
+
 }
 
 
@@ -236,7 +286,7 @@ function delete_main_card(id) {
                         icon: "success",
                     });
                     arr_elements.pop();
-                    document.getElementById("sub_data_container_" + id).style.display = "none";
+                    document.getElementById("sub_data_container_" + id).remove();
                     delete_sub_card(id)
                     if (arr_elements.length == 2) {
                         open_Form.style.display = "block"

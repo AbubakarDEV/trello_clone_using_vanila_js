@@ -21,9 +21,13 @@ Wednesday Task:
 3. append div into child -done
 
 
-friday
+Thursday Task:
+1. Improve UI Design
+2. Add Delete and Edit Feature
 
-1. form empty on Add
+
+Friday Task:
+1. form empty on Add -done
 2. edit and delete button
 3. Add Status field and move 
 4. Deleted unsucessfull -done
