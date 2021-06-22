@@ -3,11 +3,11 @@ var sub_arr_elements = []//sub array to push notes
 let sub_data_ul = document.getElementById("sub_data_ul");
 var outerid = 1;
 var inner_id = 1;
-var compare_status = null
+var status_display_count = 0;
 var assign_to_global = []
 var inside_assign = true
 var toggle = true
-var isInnerdata = false
+var isInnerdata = true
 var array_to_sort_by_title = []
 var array_to_sort_by_randomly = []
 axios.get('http://60d057db7de0b2001710859d.mockapi.io/users')
@@ -44,8 +44,11 @@ window.onclick = function (event) {
 
 
 function edit_Handler(sub_array_obj) {
-    // debugger;
+
     document.getElementById('addBtn_subForm').style.display = "none"
+
+    status_display_count++
+
     var status_after_onclick_edit = document.getElementById('status')
     status_after_onclick_edit.style.display = "block"
     document.getElementById('status_label').style.display = "block"
@@ -95,6 +98,19 @@ function edit_Handler_2(e) {
 }
 
 
+function display_status_function(mainID, title) {
+
+    // for (let index = 0; index < arr_elements.length; index++) {
+    let elem = document.createElement('OPTION')
+    elem.value = mainID
+    var status = document.getElementById('status')
+    elem.innerHTML = title
+    status.appendChild(elem)
+
+
+}
+
+
 
 function display_inner_data(sub_array_obj, mainID) {
     //7
@@ -106,7 +122,7 @@ function display_inner_data(sub_array_obj, mainID) {
         elem.style.color = "white"
         elem.style.padding = "10px"
         elem.style.width = "160px"
-        elem.style.height="100px"
+        elem.style.height = "100px"
         elem.style.position = "relative"
         elem.style.backgroundColor = "#844d4d"
         elem.id = "inner_ul_for_edit_" + sub_array_obj.sub_id
@@ -167,9 +183,7 @@ function submit_inner_data(mainID) {
         des: inner_description
     }
     sub_arr_elements.push(sub_array_obj)
-    if (sub_arr_elements.length > 1) {
-        isInnerdata = true
-    }
+
     display_inner_data(sub_array_obj, mainID)
 
 }
@@ -177,7 +191,7 @@ function submit_inner_data(mainID) {
 
 
 function delete_handler_for_sort(array_to_sort_by_title) {
-    debugger;
+
     array_to_sort_by_title.forEach((element, index, array) => {
         var ul = document.getElementById('inner_ul_for_edit_' + element.sub_id)
         remove_edit_and_delete(element.sub_id)
@@ -229,13 +243,10 @@ function closeDropDown(mainID) {
 }
 
 function PushAllTask(mainID) {
-    closeDropDown(mainID)
     innerModel.style.display = "block"
     PushAllTask_to_new()
-    // setTimeout(()=>{
-    //     innerModel.style.display = "none";
-    // },5000)
-
+    closeDropDown(mainID)
+    // innerModel.style.display = "none";
 
 }
 function PushAllTask_to_new() {
@@ -244,10 +255,10 @@ function PushAllTask_to_new() {
         var ul = document.getElementById('inner_ul_for_edit_' + sub_arr_elements[index].sub_id)
         ul.remove()
     }
-
     var inner_status = document.getElementById('status_update').value
     for (let index = 0; index < sub_arr_elements.length; index++) {
         display_inner_data(sub_arr_elements[index], inner_status)
+
     }
 
 
@@ -270,8 +281,12 @@ const MainTaskTemplate = (obj) => {
                                         font-size: x-large;
                                         color: white;
                                         position: absolute;
-                                        right: 10px;
-                                        top: 0px;"
+                                        right: 0px;
+                                        top: 0px;
+                                        background-color: #d2d2dd;
+                                        padding-right: 5px;
+                                        padding-left: 5px;
+                                        "
                                         onclick="openDropDown(${obj.id})" 
                                         id="dropdown"
                                         class="fa fa-ellipsis-h"></i>
@@ -326,7 +341,10 @@ function save_data() {
             assign_to_function()
         }
         display_main_data(myobj)
+
+        display_status_function(myobj.id, myobj.title)
         outerid++;
+
     }
     if (arr_elements.length < 2) {
         document.getElementById('open_Form').style.display = "block"
