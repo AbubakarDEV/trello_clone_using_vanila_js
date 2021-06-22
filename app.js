@@ -4,15 +4,37 @@ let sub_data_ul = document.getElementById("sub_data_ul");
 var outerid = 1;
 var inner_id = 1;
 var compare_status = null
-var modal = document.getElementById("myModal");
-// Get the <span> element that closes the modal
+var assign_to_global = []
+var inside_assign = true
+var toggle = true
+var isInnerdata = false
+var array_to_sort_by_title = []
+var array_to_sort_by_randomly = []
+axios.get('http://60d057db7de0b2001710859d.mockapi.io/users')
+    .then(function (response) {
+        assign_to_global = response.data
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+
 var span = document.getElementsByClassName("close")[0];
-// When the user clicks on <span> (x), close the modal
+var span2 = document.getElementsByClassName("close")[1];
+var modal = document.getElementById("myModal");
+var innerModel = document.getElementById("innerModel");
+span2.onclick = function () {
+    innerModel.style.display = "none";
+}
+
+window.onclick = function (event) {
+    if (event.target == modal) {
+        innerModel.style.display = "none";
+    }
+}
+
 span.onclick = function () {
     modal.style.display = "none";
 }
-
-// When the user clicks anywhere outside of the modal, close it
 window.onclick = function (event) {
     if (event.target == modal) {
         modal.style.display = "none";
@@ -22,32 +44,29 @@ window.onclick = function (event) {
 
 
 function edit_Handler(sub_array_obj) {
-    //8
-
-    console.log(sub_array_obj)
-    document.getElementById('addBtn_subForm').style.display="none"
+    // debugger;
+    document.getElementById('addBtn_subForm').style.display = "none"
     var status_after_onclick_edit = document.getElementById('status')
-    console.log("status value", status_after_onclick_edit.value)
     status_after_onclick_edit.style.display = "block"
     document.getElementById('status_label').style.display = "block"
     var ul = document.getElementById('inner_ul_for_edit_' + sub_array_obj.sub_id)
     var editbtn = document.getElementById("edit_btn");
     editbtn.style.display = "block"
     editbtn.name = sub_array_obj.sub_id
-    var inner_title = document.getElementById('title').value = ul.children[0].innerText;
-    var inner_assign = document.getElementById('Assign').value = ul.children[1].innerText;
-    var inner_description = document.getElementById('Description').value = ul.children[2].innerText;
+    document.getElementById('title').value = ul.children[0].innerText;
+    document.getElementById('Assign').value = ul.children[1].innerText;
+    document.getElementById('Description').value = ul.children[2].innerText;
     modal.style.display = "block";
     active_status = status_after_onclick_edit.value
 }
 
 function edit_Handler_2(e) {
-    //9
-
+    // debugger
     var inner_title = document.getElementById('title').value
     var inner_assign = document.getElementById('Assign').value
     var inner_status = document.getElementById('status').value
     var inner_description = document.getElementById('Description').value
+
     if (inner_status == active_status) {
         var objIndex = sub_arr_elements.findIndex((obj => obj.sub_id == e.target.name));
         sub_arr_elements[objIndex].title = inner_title
@@ -58,15 +77,16 @@ function edit_Handler_2(e) {
         ul.children[1].innerText = inner_assign;
         ul.children[2].innerText = inner_description;
         modal.style.display = "none";
-        document.getElementById('status').remove()
-        document.getElementById('status_label').remove()
+        document.getElementById('status').style.display = "none"
+        document.getElementById('status_label').style.display = "none"
+
     }
     else {
+        // debugger;
         var ul = document.getElementById('inner_ul_for_edit_' + e.target.name)
         ul.remove()
         var objIndex = sub_arr_elements.findIndex((obj => obj.sub_id == e.target.name));
         display_inner_data(sub_arr_elements[objIndex], inner_status)
-        // remove_edit_and_delete()
         modal.style.display = "none";
 
     }
@@ -75,15 +95,9 @@ function edit_Handler_2(e) {
 }
 
 
-function delete_handler(sub_array_obj) {
-    var ul = document.getElementById('inner_ul_for_edit_' + sub_array_obj.sub_id)
-    ul.remove()
-}
-
 
 function display_inner_data(sub_array_obj, mainID) {
     //7
-
     if (sub_array_obj) {
         let elem = document.createElement('ul');
         elem.style.listStyle = "none"
@@ -91,6 +105,9 @@ function display_inner_data(sub_array_obj, mainID) {
         elem.style.fontSize = "18px"
         elem.style.color = "white"
         elem.style.padding = "10px"
+        elem.style.width = "160px"
+        elem.style.height="100px"
+        elem.style.position = "relative"
         elem.style.backgroundColor = "#844d4d"
         elem.id = "inner_ul_for_edit_" + sub_array_obj.sub_id
 
@@ -114,11 +131,10 @@ function display_inner_data(sub_array_obj, mainID) {
         var div = document.getElementById("sub_data_ul_" + mainID);
 
         div.appendChild(elem);
-        div.appendChild(edit_btn)
-        div.appendChild(delete_btn)
-
-
+        elem.appendChild(edit_btn)
+        elem.appendChild(delete_btn)
         inner_id++
+
         delete_btn.onclick = function () {
             delete_handler(sub_array_obj)
             remove_edit_and_delete(sub_array_obj.sub_id)
@@ -131,13 +147,11 @@ function display_inner_data(sub_array_obj, mainID) {
     }
 }
 
+
 const subTaskTemplate = (obj) => {
     return `<li>${obj.title}</li><li>${obj.assign}</li><li>${obj.des}</li>`
 }
-function remove_edit_and_delete(id) {
-    document.getElementById('delete_btn_inside_sub_data' + id).remove()
-    document.getElementById('edit_btn_inside_sub_data' + id).remove()
-}
+
 
 
 function submit_inner_data(mainID) {
@@ -153,38 +167,93 @@ function submit_inner_data(mainID) {
         des: inner_description
     }
     sub_arr_elements.push(sub_array_obj)
+    if (sub_arr_elements.length > 1) {
+        isInnerdata = true
+    }
     display_inner_data(sub_array_obj, mainID)
 
 }
 
-function saveForm(e) {
-    //5
-    submit_inner_data(e.target.name)
-    clearForm();
+
+
+function delete_handler_for_sort(array_to_sort_by_title) {
+    debugger;
+    array_to_sort_by_title.forEach((element, index, array) => {
+        var ul = document.getElementById('inner_ul_for_edit_' + element.sub_id)
+        remove_edit_and_delete(element.sub_id)
+        ul.remove()
+    });
+    array_to_sort_by_title = null
 }
 
-function bindForm() {
-    var sub_data_save_btn = document.getElementById('addBtn_subForm')
-    sub_data_save_btn.addEventListener("click", saveForm)
-    var editbtn = document.getElementById("edit_btn");
-    editbtn.addEventListener('click', edit_Handler_2)
+function sortbyAlphabet(mainID) {
+    closeDropDown(mainID)
+    array_to_sort_by_title = [...sub_arr_elements]
+    if (sub_arr_elements.length > 1) {
+        array_to_sort_by_title.sort(function (a, b) {
+            var nameA = a.title.toUpperCase(); // ignore upper and lowercase
+            var nameB = b.title.toUpperCase(); // ignore upper and lowercase
+            if (nameA < nameB) {
+                return -1;
+            }
+            if (nameA > nameB) {
+                return 1;
+            }
+            return 0;
+        });
+    }
+    delete_handler_for_sort(sub_arr_elements)
+    // debugger;
+    for (let index = 0; index < array_to_sort_by_title.length; index++) {
+        display_inner_data(array_to_sort_by_title[index], mainID)
+    }
 
 }
 
-document.addEventListener("DOMContentLoaded", bindForm);
+function sortbyRandomly(mainID) {
+    closeDropDown(mainID)
+    array_to_sort_by_randomly = [...sub_arr_elements]
+    if (sub_arr_elements.length > 1) {
+        array_to_sort_by_randomly.sort(() => Math.random() - 1);
+    }
+    delete_handler_for_sort(array_to_sort_by_randomly)
+    for (let index = 0; index < array_to_sort_by_randomly.length; index++) {
+        display_inner_data(array_to_sort_by_randomly[index], mainID)
+    }
 
-
-function add_sub_details(mainID) {
-    //4
-    document.getElementById("addBtn_subForm").name = mainID
-    document.getElementById('addBtn_subForm').style.display = "block"
-    document.getElementById("edit_btn").style.display="none"
-    modal.style.display = "block";
 }
 
+function closeDropDown(mainID) {
+    var showdropdown = document.getElementById('showdropdown_' + mainID)
+    showdropdown.style.display = "none"
+}
+
+function PushAllTask(mainID) {
+    closeDropDown(mainID)
+    innerModel.style.display = "block"
+    PushAllTask_to_new()
+    // setTimeout(()=>{
+    //     innerModel.style.display = "none";
+    // },5000)
+
+
+}
+function PushAllTask_to_new() {
+
+    for (let index = 0; index < sub_arr_elements.length; index++) {
+        var ul = document.getElementById('inner_ul_for_edit_' + sub_arr_elements[index].sub_id)
+        ul.remove()
+    }
+
+    var inner_status = document.getElementById('status_update').value
+    for (let index = 0; index < sub_arr_elements.length; index++) {
+        display_inner_data(sub_arr_elements[index], inner_status)
+    }
+
+
+}
 const MainTaskTemplate = (obj) => {
     //3
-
     return `
                                 <div style="
                                 padding: 15px;
@@ -192,19 +261,39 @@ const MainTaskTemplate = (obj) => {
                                 width: 150px;
                                 position:relative;
                                 background-color:#844d4d;
-                                margin-right:10px;
+                                margin-right:150px;
                                 margin-bottom:10px
                                 "
                                 id="sub_data_container_${obj.id}"
                                 >
-                                        
+                                        <i style="
+                                        font-size: x-large;
+                                        color: white;
+                                        position: absolute;
+                                        right: 10px;
+                                        top: 0px;"
+                                        onclick="openDropDown(${obj.id})" 
+                                        id="dropdown"
+                                        class="fa fa-ellipsis-h"></i>
+                                        <div id="showdropdown_${obj.id}" style="display:none" >
+                                            
+                                            <a href="#" onclick="sortbyAlphabet(${obj.id})">Sort By Alphabet</a>
+                                            <br>
+                                            <br>
+                                            <a href="#" onclick="sortbyRandomly(${obj.id})")>Sort Randomly</a>
+                                            <br>
+                                            <br>
+                                            <a href="#" onclick="PushAllTask(${obj.id})">Push All tasks</a>
+                                            
+                                        </div>
+
                                         <h2>${obj.title}</h2>
                                         <h5>${obj.date}</h5>
-                                        <button style="position:absolute;bottom:0;left:0;padding:10px" onclick="add_sub_details(${obj.id}) ">Add a card</button>
+                                        <button style="position:absolute;bottom:0;left:0;padding:10px" onclick="add_sub_details(${obj.id})" >Add a card</button>
                                         <button style="position:absolute;bottom:0;right:0;padding:10px"  onclick="delete_main_card(${obj.id})">Delete</button>            
                                         
                                 </div>
-                                <div id="sub_data_ul_${obj.id}" style="position:relative;background-color:white;width:180px;height:auto;;margin-bottom:10px">
+                                <div id="sub_data_ul_${obj.id}" style="position:"relative";background-color:white;height:auto;margin-bottom:10px">
                                 
                                 </div>
                                 `
@@ -217,7 +306,7 @@ const MainTaskTemplate = (obj) => {
 var addBtn = document.getElementById("addBtn");
 addBtn.addEventListener("click", save_data);
 function save_data() {
-
+    console.log("1")
     //1
     var add_title = document.getElementById('notes_title');
     if (add_title.value == "") {
@@ -233,6 +322,9 @@ function save_data() {
         }
         arr_elements.push(myobj);
         add_title.value = ""
+        if (inside_assign == true) {
+            assign_to_function()
+        }
         display_main_data(myobj)
         outerid++;
     }
@@ -250,7 +342,6 @@ function save_data() {
 
 function display_main_data(obj) {
 
-    //2
     let elem = document.createElement('div');
     elem.style.fontSize = "16px"
     elem.innerHTML = MainTaskTemplate(obj)
@@ -265,10 +356,52 @@ function clearForm() {
     var inner_assign = document.getElementById('Assign').value = "";
     var inner_description = document.getElementById('Description').value = "";
 }
+function saveForm(e) {
+    //5
+    submit_inner_data(e.target.name)
+    clearForm();
+}
+
+function assign_to_function() {
+    inside_assign = true
+    for (let index = 0; index < assign_to_global.length; index++) {
+        let elem = document.createElement('OPTION')
+        elem.value = assign_to_global[index].name
+        var assign_to = document.getElementById('Assign')
+        elem.innerHTML = assign_to_global[index].name
+        assign_to.appendChild(elem)
+    }
+    inside_assign = false
+
+}
+
+function openDropDown(id) {
+    if (toggle == true) {
+        var showdropdown = document.getElementById('showdropdown_' + id)
+        showdropdown.style.display = "block";
+        showdropdown.style.position = "absolute"
+        showdropdown.style.right = "-140px"
+        showdropdown.style.top = "5px"
+        toggle = false
+    }
+    else if (toggle == false) {
+        toggle = true
+        var showdropdown = document.getElementById('showdropdown_' + id)
+        showdropdown.style.display = "none"
+    }
+}
+
 
 function delete_sub_card(mainID) {
     var ul = document.getElementById("sub_data_ul_" + mainID);
     ul.remove();
+}
+
+function add_sub_details(mainID) {
+    document.getElementById("addBtn_subForm").name = mainID
+    document.getElementById('addBtn_subForm').style.display = "block"
+    document.getElementById("edit_btn").style.display = "none"
+    modal.style.display = "block";
 }
 
 function delete_main_card(id) {
@@ -299,3 +432,24 @@ function delete_main_card(id) {
 }
 
 
+function bindForm() {
+
+    var sub_data_save_btn = document.getElementById('addBtn_subForm')
+    sub_data_save_btn.addEventListener("click", saveForm)
+    var editbtn = document.getElementById("edit_btn");
+    editbtn.addEventListener('click', edit_Handler_2)
+    var push_btn = document.getElementById("btn_push");
+    push_btn.addEventListener('click', PushAllTask_to_new)
+}
+
+document.addEventListener("DOMContentLoaded", bindForm);
+
+function remove_edit_and_delete(id) {
+    document.getElementById('delete_btn_inside_sub_data' + id).style.display = "none"
+    document.getElementById('edit_btn_inside_sub_data' + id).style.display = "none"
+}
+
+function delete_handler(sub_array_obj) {
+    var ul = document.getElementById('inner_ul_for_edit_' + sub_array_obj.sub_id)
+    ul.style.display = "none"
+}

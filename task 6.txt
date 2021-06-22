@@ -22,12 +22,18 @@ Wednesday Task:
 
 
 Thursday Task:
-1. Improve UI Design
-2. Add Delete and Edit Feature
+1. Improve UI Design -done
+2. Add Delete and Edit Feature -done
 
 
 Friday Task:
 1. form empty on Add -done
-2. edit and delete button
-3. Add Status field and move 
+2. edit and delete button -done
+3. Add Status field and move -done
 4. Deleted unsucessfull -done
+
+
+Monday:
+1. Resolve edit and delete -done
+2. Sorting  -done
+3. Shift all tasks -done

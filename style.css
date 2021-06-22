@@ -24,7 +24,7 @@ h1{
     
 }
 
-#addBtn,#addBtn_subForm,#edit_btn{
+#addBtn,#addBtn_subForm,#edit_btn,#btn_push{
     margin-top: 10px;
     background-image: linear-gradient(to right,#6b523e,#804348);    
     width: 80px;
@@ -65,18 +65,18 @@ select{
 #display_outer_card{
     margin-top: 1%;
     display: flex;
-    padding-left: 30%;
+    padding-left: 12%;
+    position: relative;
+    
+}
+a{
+    background-color: #844d4d;
+    font-size: 18px;
+    color: #ffffff;
+    text-decoration: none;
+    padding: 5px;
 }
 
-/* #edit_btn_inside_sub_data,#delete_btn_inside_sub_data{
-    padding: 5px;
-    position: absolute;
-    right: 0;
-    bottom: 0;
-}
-#delete_btn_inside_sub_data{
-    right: 40px;
-} */
 #status_label,#edit_btn,#status{
     display: none;
 }

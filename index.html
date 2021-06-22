@@ -22,10 +22,8 @@
         <button id="addBtn">Add</button>
     </div>
 
-    <div class="container_2">
-        <div id="display_outer_card">
+    <div id="display_outer_card">
 
-        </div>
     </div>
 
     <!-- The Modal -->
@@ -39,10 +37,6 @@
             <input type="text" id="title" name="title"><br>
             <label for="Assignto">Assign To</label><br>
             <select name="Assign" id="Assign">
-                <option value="Abubakar">Abubakar</option>
-                <option value="Talha">Talha</option>
-                <option value="Anas">Anas</option>
-                <option value="Rizwan">Rizwan</option>
             </select>
             <br>
             <label for="status" id="status_label">Status</label>
@@ -61,10 +55,27 @@
 
     </div>
 
+    <div id="innerModel" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <label for="status_update" id="status_label_update">Where You want to push</label>
+            <select name="status_update" id="status_update">
+                <option value="1">To-do</option>
+                <option value="2">Pending</option>
+                <option value="3">Completed</option>
+            </select>
+            <button id="btn_push">Push</button>
+        </div>
+
+    </div>
+
 
 </body>
-<script src="./app.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"
+    integrity="sha512-bZS47S7sPOxkjU/4Bt0zrhEtWx0y0CRkhEp8IckzK+ltifIIE9EMIMTuT/mEzoIMewUINruDBIR/jJnbguonqQ=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
+<script src="./app.js"></script>
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
 </html>
